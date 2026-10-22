@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ripple: protótipo do aplicativo que avisa quedas em piscinas.">
+<meta name="theme-color" content="#F4FAFA">
+<meta name="color-scheme" content="light">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ripple">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Ripple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Outfit:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4FAFA; --card:#DDF1F3; --line:#D5E8EA; --ink:#0B2E36; --muted:#4E6E75;
+  --teal:#0E6E7E; --aqua:#1FA8B8; --alert:#C8452F; --alert-dark:#A3321F;
+  --amber-bg:#FFEBD6; --amber-ink:#7A3E00; --chip-ink:#0A5663;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+h1,h2,.brand{font-family:'Outfit','DM Sans',system-ui,sans-serif;font-weight:600;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
+
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:430px;margin:0 auto;background:var(--bg);overflow:hidden}
+.screen{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top)) 24px 24px}
+
+.top{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.brand{font-size:26px;color:var(--teal)}
+.place{font-size:13px;font-weight:500;color:var(--muted)}
+h1.title{font-size:28px}
+.sub{margin-top:4px;font-size:14px;color:var(--muted)}
+
+.hero{margin-top:16px;padding:24px;border-radius:24px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.hero h1{font-size:28px}
+.hero p{font-size:15px;line-height:1.4;color:#2F5660}
+.hero.alert{background:var(--alert);color:#fff}
+.hero.alert p{color:#fff}
+.hero .btns{display:flex;gap:10px;width:100%;margin-top:6px}
+.btn{flex:1;min-height:48px;border-radius:14px;font-size:15px;font-weight:600;border:1.5px solid transparent}
+.btn.solid{background:#fff;color:var(--alert-dark)}
+.btn.ghost{background:transparent;color:#fff;border-color:#fff}
+.btn.sim{width:100%;margin-top:14px;min-height:52px;border-radius:16px;background:#fff;color:var(--alert-dark);border-color:var(--alert)}
+.btn.outline{width:100%;background:#fff;color:var(--teal);border-color:var(--teal);min-height:46px}
+
+.pair{display:flex;gap:12px;margin-top:14px}
+.tile{flex:1;padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.tile .k{font-size:12px;font-weight:500;color:var(--muted)}
+.tile .v{margin-top:4px;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--aqua)}
+
+h2.sec{font-size:18px;margin:18px 0 2px}
+.ev{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .t{font-size:15px;font-weight:500}
+.ev .w{margin-top:2px;font-size:13px;color:var(--muted)}
+.chip{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip.off{background:var(--amber-bg);color:var(--amber-ink)}
+.chip.test{background:var(--card);color:var(--chip-ink)}
+
+.list{margin-top:16px;padding:4px 18px;border-radius:20px;background:#fff;border:1px solid var(--line)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #E4F0F1;font-size:15px}
+.row:last-child{border-bottom:0}
+.row .l{color:var(--muted)}
+.row .r{font-weight:600}
+.bat{display:flex;align-items:center;gap:10px}
+.bat .bar{width:80px;height:8px;border-radius:4px;background:var(--card);overflow:hidden}
+.bat .bar i{display:block;width:82%;height:100%;background:var(--aqua)}
+
+.stats{display:flex;gap:10px}
+.stat{flex:1;padding:14px 12px;border-radius:16px;text-align:center;background:var(--card)}
+.stat.off{background:var(--amber-bg)}
+.stat .n{font-family:'Outfit',sans-serif;font-weight:600;font-size:32px;color:var(--teal)}
+.stat.off .n,.stat.off .c{color:var(--amber-ink)}
+.stat .c{margin-top:2px;font-size:13px;font-weight:500;color:#2F5660}
+
+.person{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600}
+.person .n{font-size:15px;font-weight:500}
+.person .s{margin-top:2px;font-size:13px;color:var(--muted)}
+.person + .btn{margin-top:12px}
+.note{margin-top:18px;font-size:12px;line-height:1.4;color:var(--muted);text-align:center}
+
+.seg{display:flex;gap:4px;margin-top:16px;padding:4px;border-radius:16px;background:var(--card)}
+.seg button{flex:1;min-height:44px;border:0;border-radius:12px;background:transparent;color:var(--teal);font-size:15px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--teal);color:#fff}
+.chart{margin-top:14px;padding:18px;border-radius:20px;background:#fff;border:1px solid var(--line)}
+.chart .head{display:flex;align-items:baseline;justify-content:space-between}
+.chart .head .a{font-size:14px;font-weight:500;color:var(--muted)}
+.chart .head .b{font-size:13px;color:var(--muted)}
+.chart .total{font-family:'Outfit',sans-serif;font-weight:600;font-size:36px;color:var(--teal)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:8px}
+.bcol{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px}
+.bcol .bv{font-size:13px;font-weight:600;color:#2F5660}
+.bcol .bb{width:100%;border-radius:8px 8px 4px 4px}
+.bcol .bl{font-size:12px;color:var(--muted)}
+
+.tabs{display:flex;background:#fff;border-top:1px solid var(--line);padding:0 8px env(safe-area-inset-bottom);flex-shrink:0}
+.tab{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:500}
+.tab[aria-current="page"]{color:var(--teal);font-weight:600}
+.tab svg{display:block}
+
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);max-width:340px;padding:12px 16px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;text-align:center;z-index:5}
+
+@media (min-width:600px){
+  body{background:#E3EFF0;display:flex;align-items:center;justify-content:center}
+  .app{height:min(860px,100dvh);border-radius:32px;border:1px solid var(--line);box-shadow:0 20px 60px rgba(11,46,54,.18)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Tela 1: Início -->
+  <main class="screen" id="tela-inicio" aria-label="Início">
+    <header class="top">
+      <div class="logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <circle cx="18" cy="18" r="16" stroke="#1FA8B8" stroke-width="2" opacity="0.35"/>
+          <circle cx="18" cy="18" r="10.5" stroke="#1FA8B8" stroke-width="2" opacity="0.65"/>
+          <circle cx="18" cy="18" r="5" fill="#0E6E7E"/>
+        </svg>
+        <span class="brand">Ripple</span>
+      </div>
+      <span class="place">Piscina do quintal</span>
+    </header>
+
+    <section class="hero" id="ok-card">
+      <svg width="140" height="140" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+        <circle cx="80" cy="80" r="76" stroke="#1FA8B8" stroke-width="2" opacity="0.3"/>
+        <circle cx="80" cy="80" r="56" stroke="#1FA8B8" stroke-width="2.5" opacity="0.55"/>
+        <circle cx="80" cy="80" r="36" stroke="#1FA8B8" stroke-width="3" opacity="0.85"/>
+        <circle cx="80" cy="80" r="22" fill="#0E6E7E"/>
+        <path d="M71 80l6 6 12-13" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h1>Piscina segura</h1>
+      <p>Nenhuma queda detectada. A boia está monitorando agora.</p>
+    </section>
+
+    <section class="hero alert" id="alert-card" role="alert" hidden>
+      <svg width="100" height="100" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+        <circle cx="80" cy="80" r="76" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+        <circle cx="80" cy="80" r="56" stroke="#FFFFFF" stroke-width="2.5" opacity="0.6"/>
+        <circle cx="80" cy="80" r="36" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
+        <circle cx="80" cy="80" r="22" fill="#FFFFFF"/>
+        <path d="M80 70v13" stroke="#C8452F" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="80" cy="91" r="3" fill="#C8452F"/>
+      </svg>
+      <h1>Queda detectada!</h1>
+      <p>Piscina do quintal · agora</p>
+      <div class="btns">
+        <button class="btn solid" type="button" data-clear-alert>Estou indo</button>
+        <button class="btn ghost" type="button" data-clear-alert>Alarme falso</button>
+      </div>
+    </section>
+
+    <div class="pair">
+      <div class="tile"><div class="k">Boia</div><div class="v"><span class="dot"></span>Online</div></div>
+      <div class="tile"><div class="k">Bateria</div><div class="v">82%</div></div>
+    </div>
+
+    <button class="btn sim" id="simulate" type="button">Simular alerta (demonstração)</button>
+
+    <h2 class="sec">Últimos eventos</h2>
+    <div>
+      <div class="ev"><div><div class="t">Ondulação leve descartada</div><div class="w">Sáb, 15:05</div></div><span class="chip off">Descartado</span></div>
+      <div class="ev"><div><div class="t">Teste de alerta</div><div class="w">Qui, 10:42</div></div><span class="chip test">Teste</span></div>
+    </div>
+  </main>
+
+  <!-- Tela 2: Visão geral -->
+  <main class="screen" id="tela-visao-geral" aria-label="Visão geral" hidden>
+    <header>
+      <h1 class="title">Visão geral</h1>
+      <p class="sub">Piscina do quintal</p>
+    </header>
+
+    <section class="list" aria-label="Estado da boia">
+      <div class="row"><span class="l">Conexão Wi-Fi</span><span class="r">Forte</span></div>
+      <div class="row"><span class="l">Bateria</span><span class="r bat"><span class="bar"><i></i></span>82%</span></div>
+      <div class="row"><span class="l">Sensibilidade</span><span class="r">Média</span></div>
+      <div class="row"><span class="l">Última checagem</span><span class="r">há 2 min</span></div>
+    </section>
+
+    <h2 class="sec">Neste mês</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">0</div><div class="c">Quedas</div></div>
+      <div class="stat off"><div class="n">2</div><div class="c">Descartados</div></div>
+      <div class="stat"><div class="n">3</div><div class="c">Testes</div></div>
+    </div>
+
+    <h2 class="sec">Quem recebe os alertas</h2>
+    <div class="person"><div class="avatar" aria-hidden="true">1</div><div><div class="n">Responsável 1</div><div class="s">Notificação ativa</div></div></div>
+    <div class="person"><div class="avatar" aria-hidden="true">2</div><div><div class="n">Responsável 2</div><div class="s">Notificação ativa</div></div></div>
+    <button class="btn outline" type="button" id="add-person">+ Adicionar responsável</button>
+
+    <p class="note">Protótipo de interface com dados fictícios. O sensor da boia ainda será desenvolvido.</p>
+  </main>
+
+  <!-- Tela 3: Histórico -->
+  <main class="screen" id="tela-historico" aria-label="Histórico" hidden>
+    <header>
+      <h1 class="title">Histórico</h1>
+      <p class="sub">Piscina do quintal</p>
+    </header>
+
+    <div class="seg" role="group" aria-label="Período">
+      <button type="button" data-period="week" aria-pressed="true">Semanal</button>
+      <button type="button" data-period="month" aria-pressed="false">Mensal</button>
+    </div>
+
+    <section class="chart" aria-live="polite">
+      <div class="head"><span class="a">Eventos detectados</span><span class="b" id="h-period">nesta semana</span></div>
+      <div class="total" id="h-total">3</div>
+      <div class="bars" id="h-bars"></div>
+    </section>
+
+    <h2 class="sec" id="h-title">Eventos da semana</h2>
+    <div id="h-events"></div>
+  </main>
+
+  <nav class="tabs" aria-label="Navegação principal">
+    <a class="tab" href="#inicio" data-tab="inicio">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      Início
+    </a>
+    <a class="tab" href="#visao-geral" data-tab="visao-geral">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+      Visão geral
+    </a>
+    <a class="tab" href="#historico" data-tab="historico">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Histórico
+    </a>
+  </nav>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</div>
+
+<script>
+(function () {
+  var SCREENS = ['inicio', 'visao-geral', 'historico'];
+
+  function show(id) {
+    if (SCREENS.indexOf(id) === -1) id = 'inicio';
+    document.getElementById('toast').hidden = true;
+    SCREENS.forEach(function (s) {
+      var el = document.getElementById('tela-' + s);
+      var tab = document.querySelector('[data-tab="' + s + '"]');
+      el.hidden = s !== id;
+      if (s === id) { tab.setAttribute('aria-current', 'page'); el.scrollTop = 0; }
+      else { tab.removeAttribute('aria-current'); }
+    });
+  }
+  function fromHash() { show(location.hash.replace('#', '')); }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+
+  /* Alerta simulado */
+  var okCard = document.getElementById('ok-card');
+  var alertCard = document.getElementById('alert-card');
+  var simBtn = document.getElementById('simulate');
+  function setAlert(on) {
+    okCard.hidden = on;
+    alertCard.hidden = !on;
+    simBtn.hidden = on;
+    if (on) {
+      try { if (navigator.vibrate) navigator.vibrate([300, 120, 300, 120, 300]); } catch (e) {}
+    }
+  }
+  simBtn.addEventListener('click', function () { setAlert(true); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-clear-alert]'), function (b) {
+    b.addEventListener('click', function () { setAlert(false); });
+  });
+
+  /* Aviso de função não implementada */
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  document.getElementById('add-person').addEventListener('click', function () {
+    toast.textContent = 'Função ainda não disponível neste protótipo.';
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.hidden = true; }, 2200);
+  });
+
+  /* Histórico */
+  var CHIP = { off: ['off', 'Descartado'], test: ['test', 'Teste'] };
+  var DATA = {
+    week: {
+      period: 'nesta semana', title: 'Eventos da semana',
+      labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      values: [0, 1, 0, 1, 0, 1, 0],
+      events: [
+        ['Ondulação leve descartada', 'Sáb, 15:05', 'off'],
+        ['Teste de alerta', 'Qui, 10:42', 'test'],
+        ['Teste de alerta', 'Ter, 18:20', 'test']
+      ]
+    },
+    month: {
+      period: 'neste mês', title: 'Eventos do mês',
+      labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+      values: [1, 1, 0, 3],
+      events: [
+        ['Ondulação leve descartada', 'Sem 4 · Sáb, 15:05', 'off'],
+        ['Teste de alerta', 'Sem 4 · Qui, 10:42', 'test'],
+        ['Teste de alerta', 'Sem 4 · Ter, 18:20', 'test'],
+        ['Ondulação leve descartada', 'Sem 2 · Qua, 14:12', 'off'],
+        ['Teste de alerta', 'Sem 1 · Seg, 09:10', 'test']
+      ]
+    }
+  };
+  var segBtns = document.querySelectorAll('[data-period]');
+
+  function renderPeriod(key) {
+    var d = DATA[key];
+    var max = Math.max.apply(null, d.values.concat([1]));
+    var total = d.values.reduce(function (a, b) { return a + b; }, 0);
+    document.getElementById('h-period').textContent = d.period;
+    document.getElementById('h-total').textContent = total;
+    document.getElementById('h-title').textContent = d.title;
+    document.getElementById('h-bars').innerHTML = d.values.map(function (v, i) {
+      var h = v === 0 ? 4 : Math.round(v / max * 90) + 20;
+      var bg = v === 0 ? '#BFD9DC' : '#1FA8B8';
+      return '<div class="bcol"><span class="bv">' + v + '</span>' +
+        '<div class="bb" style="height:' + h + 'px;background:' + bg + '"></div>' +
+        '<span class="bl">' + d.labels[i] + '</span></div>';
+    }).join('');
+    document.getElementById('h-events').innerHTML = d.events.map(function (e) {
+      var c = CHIP[e[2]];
+      return '<div class="ev"><div><div class="t">' + e[0] + '</div><div class="w">' + e[1] +
+        '</div></div><span class="chip ' + c[0] + '">' + c[1] + '</span></div>';
+    }).join('');
+    Array.prototype.forEach.call(segBtns, function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-period') === key ? 'true' : 'false');
+    });
+  }
+  Array.prototype.forEach.call(segBtns, function (b) {
+    b.addEventListener('click', function () { renderPeriod(b.getAttribute('data-period')); });
+  });
+  renderPeriod('week');
+})();
+</script>
+</body>
+</html>
