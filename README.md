@@ -1,5 +1,9 @@
 # Ripple — Aplicativo (Protótipo Visual)
 
+<p align="center">
+  <img src="asset/ripple-banner.png" alt="Ripple — Conceito da Boia Inteligente" width="100%">
+</p>
+
 > **Interface conceitual em Progressive Web App (PWA) para o sistema de segurança de piscinas Ripple.**
 
 > [!WARNING]
@@ -28,10 +32,11 @@ O **Ripple App** foi concebido para validar a experiência de uso (UX/UI) no mon
 
 ```text
 ripple-app/
-├── asset/                  # Imagens e ícones da aplicação (PWA / Touch Icons)
+├── asset/                  # Imagens e ícones da aplicação (PWA / Touch Icons / Banner)
 │   ├── apple-touch-icon.png
 │   ├── icon-192.png
-│   └── icon-512.png
+│   ├── icon-512.png
+│   └── ripple-banner.png
 ├── index.html              # Interface, layout e regras do protótipo (SPA Vanilla)
 ├── manifest.webmanifest    # Manifesto PWA configurado com os caminhos da pasta asset/
 └── README.md               # Documentação técnica do projeto
